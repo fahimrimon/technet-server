@@ -53,7 +53,29 @@ const run = async () => {
       res.send(result);
     });
 
+    app.post('/comment/:id', async (req, res) => {
+      const productId = req.params.id;
+      const comment = req.body.comment;
     
+      console.log(productId);
+      console.log(comment);
+    
+      const result = await productCollection.updateOne(
+        { _id: ObjectId(productId) },
+        { $push: { comments: comment } }
+      );
+    
+      console.log(result);
+    
+      if (result.modifiedCount !== 1) {
+        console.error('Product not found or comment not added');
+        res.json({ error: 'Product not found or comment not added' });
+        return;
+      }
+    
+      console.log('Comment added successfully');
+      res.json({ message: 'Comment added successfully' });
+    });
 
     app.get('/comment/:id', async (req, res) => {
       const productId = req.params.id;
